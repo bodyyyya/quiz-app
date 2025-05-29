@@ -165,3 +165,21 @@ h1, h2 {
   background: var(--clr-primary);
   color: #fff;
 }
+
+#global-timer {
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #444;
+  margin-bottom: 1rem;
+}
+
+.question-nav .timeout {
+  background-color: #f39c12;
+}
+
+#topics-container h2 {
+  font-size: 1.2rem;
+  margin-top: 1.5rem;
+  color: var(--clr-primary);
+  text-align: left;
+}

@@ -8,30 +8,37 @@
 </head>
 <body>
   <div class="container">
-    <!-- Вибір теми -->
     <section id="topic-selection" class="card">
       <h1>Оберіть тему</h1>
       <div id="topics-container" class="btn-group"></div>
     </section>
 
-    <!-- Тест -->
     <section id="quiz-section" class="card hidden">
       <div class="quiz-header">
         <h2 id="quiz-title"></h2>
         <div id="progress"></div>
       </div>
 
-      <!-- Навігація по номерах питань -->
       <div id="question-nav" class="question-nav"></div>
 
       <div id="question-container" class="question-box"></div>
     </section>
 
-    <!-- Фініш -->
     <section id="finish-section" class="card hidden">
       <h1>Результат</h1>
       <p id="score-text" style="margin-bottom: 1rem;"></p>
       <button id="restart-btn" class="btn">Повернутись до тем</button>
+    </section>
+
+    <section id="history-section" class="card hidden">
+      <h1>Історія тестів</h1>
+      <table id="history-table">
+        <thead>
+          <tr><th>Дата</th><th>Тема</th><th>Результат</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <button id="back-btn" class="btn">Повернутись</button>
     </section>
   </div>
 

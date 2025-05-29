@@ -1,6 +1,7 @@
-// assets/js/quiz.js
+// 📁 assets/js/quiz.js
 let currentQuiz, currentIndex;
 let userAnswers;
+let quizTimerInterval, totalTimeLeft;
 
 const quizSection       = document.getElementById('quiz-section');
 const quizTitle         = document.getElementById('quiz-title');
@@ -13,11 +14,11 @@ const scoreText     = document.getElementById('score-text');
 const restartBtn    = document.getElementById('restart-btn');
 
 restartBtn.addEventListener('click', () => {
+  clearInterval(quizTimerInterval);
   finishSection.classList.add('hidden');
   document.getElementById('topic-selection').classList.remove('hidden');
 });
 
-// Старт тесту
 export function startQuiz(key, quiz) {
   currentQuiz   = quiz;
   currentIndex  = 0;
@@ -29,9 +30,35 @@ export function startQuiz(key, quiz) {
 
   buildNav();
   renderQuestion();
+
+  // ⏳ Старт глобального таймера
+  clearInterval(quizTimerInterval);
+  const timeMinutes = quiz.timeLimit || 5;
+  totalTimeLeft = timeMinutes * 60;
+
+  let globalTimerEl = document.getElementById('global-timer');
+  if (!globalTimerEl) {
+    globalTimerEl = document.createElement('div');
+    globalTimerEl.id = 'global-timer';
+    quizTitle.after(globalTimerEl);
+  }
+  updateGlobalTimer(globalTimerEl);
+  quizTimerInterval = setInterval(() => {
+    totalTimeLeft--;
+    updateGlobalTimer(globalTimerEl);
+    if (totalTimeLeft <= 0) {
+      clearInterval(quizTimerInterval);
+      finishQuiz();
+    }
+  }, 1000);
 }
 
-// Створюємо клікабельні номери питань
+function updateGlobalTimer(el) {
+  const min = Math.floor(totalTimeLeft / 60).toString().padStart(2, '0');
+  const sec = (totalTimeLeft % 60).toString().padStart(2, '0');
+  el.textContent = `🕒 Залишилось: ${min}:${sec}`;
+}
+
 function buildNav() {
   questionNav.innerHTML = '';
   currentQuiz.questions.forEach((_, idx) => {
@@ -46,12 +73,10 @@ function buildNav() {
   });
 }
 
-// Рендер питання + оновлення навігації
 function renderQuestion() {
   const total = currentQuiz.questions.length;
   progressDiv.textContent = `Питання ${currentIndex + 1} з ${total}`;
 
-  // підсвіт Active
   Array.from(questionNav.children).forEach((el, idx) => {
     el.classList.toggle('active', idx === currentIndex);
   });
@@ -64,7 +89,6 @@ function renderQuestion() {
     btn.textContent = opt;
     btn.disabled = false;
 
-    // Якщо вже відповідав — підсвітимо в опціях
     if (userAnswers[currentIndex] === opt) {
       btn.classList.add(opt === q.answer ? 'correct' : 'wrong');
     }
@@ -74,28 +98,19 @@ function renderQuestion() {
   });
 }
 
-// Обробка відповіді
 function selectAnswer(button, opt) {
   const q       = currentQuiz.questions[currentIndex];
   const correct = q.answer;
-
   userAnswers[currentIndex] = opt;
 
-  // Блокуємо всі кнопки варіантів
-  questionContainer
-    .querySelectorAll('button')
-    .forEach(b => b.disabled = true);
+  questionContainer.querySelectorAll('button').forEach(b => b.disabled = true);
 
-  // Підсвічуємо кружечок навігації:
   const navItem = questionNav.children[currentIndex];
   if (opt === correct) {
-    // зелена підсвітка
     navItem.classList.add('correct');
     button.classList.add('correct');
-    // переходимо далі
     setTimeout(moveNext, 500);
   } else {
-    // червона підсвітка та показ правильного
     navItem.classList.add('wrong');
     button.classList.add('wrong');
     Array.from(questionContainer.querySelectorAll('button'))
@@ -105,7 +120,6 @@ function selectAnswer(button, opt) {
   }
 }
 
-// Переходить до наступного або фіналу
 function moveNext() {
   const last = currentQuiz.questions.length - 1;
   if (currentIndex < last) {
@@ -116,12 +130,21 @@ function moveNext() {
   }
 }
 
-// Завершення тесту
 export function finishQuiz() {
+  clearInterval(quizTimerInterval);
   quizSection.classList.add('hidden');
   const correctCount = currentQuiz.questions
     .filter((q, i) => userAnswers[i] === q.answer)
     .length;
   scoreText.textContent = `Правильно ${correctCount} із ${currentQuiz.questions.length}.`;
   finishSection.classList.remove('hidden');
+
+  const history = JSON.parse(localStorage.getItem('quiz_history') || '[]');
+  history.unshift({
+    date: new Date().toLocaleString(),
+    topic: currentQuiz.title,
+    score: correctCount,
+    total: currentQuiz.questions.length
+  });
+  localStorage.setItem('quiz_history', JSON.stringify(history));
 }
