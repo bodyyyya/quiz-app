@@ -183,3 +183,39 @@ h1, h2 {
   color: var(--clr-primary);
   text-align: left;
 }
+
+#history-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+  text-align: left;
+}
+
+#history-table thead {
+  background-color: var(--clr-primary);
+  color: var(--clr-light);
+}
+
+#history-table th,
+#history-table td {
+  padding: 0.5rem 0.75rem;
+  border-bottom: 1px solid #eaeaea;
+}
+
+#history-table tbody tr:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+#history-table tbody tr:hover {
+  background-color: #edf2ff;
+}
+
+#history-table thead tr:hover {
+  background-color: var(--clr-primary); /* без зміни фону */
+}
+
+#history-table td {
+  color: var(--clr-text);
+}
+
