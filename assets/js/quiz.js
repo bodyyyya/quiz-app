@@ -1,4 +1,3 @@
-// 📁 assets/js/quiz.js
 let currentQuiz, currentIndex;
 let userAnswers;
 let quizTimerInterval, totalTimeLeft;
@@ -31,7 +30,6 @@ export function startQuiz(key, quiz) {
   buildNav();
   renderQuestion();
 
-  // ⏳ Старт глобального таймера
   clearInterval(quizTimerInterval);
   const timeMinutes = quiz.timeLimit || 5;
   totalTimeLeft = timeMinutes * 60;

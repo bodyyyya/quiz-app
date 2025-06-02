@@ -2,11 +2,11 @@
   --clr-bg: #f4f7fb;
   --clr-card: #ffffff;
   --clr-primary: #5c7cfa;
-  --clr-primary-hover: #4b69e1;    /* додано */
+  --clr-primary-hover: #4b69e1;
   --clr-success: #37b24d;
   --clr-error:   #f03e3e;
   --clr-text:    #333333;
-  --clr-light:   #ffffff;          /* додано */
+  --clr-light:   #ffffff;
   --radius: 8px;
   --shadow: 0 4px 12px rgba(0,0,0,0.05);
   --transition: 0.3s;
@@ -212,7 +212,7 @@ h1, h2 {
 }
 
 #history-table thead tr:hover {
-  background-color: var(--clr-primary); /* без зміни фону */
+  background-color: var(--clr-primary);
 }
 
 #history-table td {
