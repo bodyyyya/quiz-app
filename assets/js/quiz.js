@@ -1,6 +1,7 @@
 let currentQuiz, currentIndex;
 let userAnswers;
 let quizTimerInterval, totalTimeLeft;
+let incorrectQuestions = [];
 
 const quizSection       = document.getElementById('quiz-section');
 const quizTitle         = document.getElementById('quiz-title');
@@ -23,6 +24,11 @@ export function startQuiz(key, quiz) {
   currentIndex  = 0;
   userAnswers   = new Array(quiz.questions.length).fill(null);
 
+  const timeMinutes = quiz.timeLimit || 5;
+  const fullTime = timeMinutes * 60;
+  const timerBar = document.getElementById('timer-bar');
+  timerBar.style.width = '100%';
+
   quizTitle.textContent     = quiz.title;
   finishSection.classList.add('hidden');
   quizSection.classList.remove('hidden');
@@ -31,8 +37,7 @@ export function startQuiz(key, quiz) {
   renderQuestion();
 
   clearInterval(quizTimerInterval);
-  const timeMinutes = quiz.timeLimit || 5;
-  totalTimeLeft = timeMinutes * 60;
+  totalTimeLeft = fullTime;
 
   let globalTimerEl = document.getElementById('global-timer');
   if (!globalTimerEl) {
@@ -44,12 +49,15 @@ export function startQuiz(key, quiz) {
   quizTimerInterval = setInterval(() => {
     totalTimeLeft--;
     updateGlobalTimer(globalTimerEl);
+    const percent = (totalTimeLeft / fullTime) * 100;
+    timerBar.style.width = `${percent}%`;
     if (totalTimeLeft <= 0) {
       clearInterval(quizTimerInterval);
       finishQuiz();
     }
   }, 1000);
 }
+
 
 function updateGlobalTimer(el) {
   const min = Math.floor(totalTimeLeft / 60).toString().padStart(2, '0');
@@ -135,6 +143,34 @@ export function finishQuiz() {
     .filter((q, i) => userAnswers[i] === q.answer)
     .length;
   scoreText.textContent = `Правильно ${correctCount} із ${currentQuiz.questions.length}.`;
+  incorrectQuestions = currentQuiz.questions.filter((q, i) => userAnswers[i] !== q.answer);
+
+  if (incorrectQuestions.length > 0) {
+    const existingRepeat = document.querySelector('#repeat-btn');
+    if (existingRepeat) existingRepeat.remove();
+  
+    const repeatBtn = document.createElement('button');
+    repeatBtn.textContent = `Повторити неправильні (${incorrectQuestions.length})`;
+    repeatBtn.className = 'btn';
+    repeatBtn.id = 'repeat-btn';
+    repeatBtn.addEventListener('click', () => {
+      finishSection.classList.add('hidden');
+      startQuiz('repeat', {
+        key: 'repeat',
+        title: `Повторення помилок: ${currentQuiz.title}`,
+        timeLimit: 3,
+        questions: incorrectQuestions
+      });
+    });
+    finishSection.appendChild(repeatBtn);
+  } else {
+    // Якщо була кнопка з попереднього проходження — прибираємо
+    const existingRepeat = document.querySelector('#repeat-btn');
+    if (existingRepeat) existingRepeat.remove();
+  }
+  
+  
+
   finishSection.classList.remove('hidden');
 
   const history = JSON.parse(localStorage.getItem('quiz_history') || '[]');
