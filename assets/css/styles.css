@@ -238,3 +238,92 @@ h1, h2 {
 #repeat-btn {
   margin-top: 1rem;
 }
+
+button.locked {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+body.dark {
+  --clr-bg: #1e1e1e;
+  --clr-card: #2a2a2a;
+  --clr-text: #f1f1f1;
+  --clr-light: #1e1e1e;
+  --clr-primary: #6c8eff;
+  --clr-primary-hover: #5a78e8;
+  --clr-success: #3adb63;
+  --clr-error: #f05555;
+  --shadow: 0 4px 12px rgba(255, 255, 255, 0.05);
+}
+
+body.dark .card {
+  background-color: var(--clr-card);
+  color: var(--clr-text);
+}
+
+body.dark .btn {
+  background: var(--clr-bg);
+  color: var(--clr-primary);
+  border-color: var(--clr-primary);
+}
+
+body.dark .btn:hover {
+  background: var(--clr-primary);
+  color: white;
+}
+
+body.dark .btn-group button {
+  background: var(--clr-primary);
+  color: white;
+}
+
+body.dark .btn-group button:hover {
+  background: var(--clr-primary-hover);
+}
+
+body.dark .question-box button {
+  background: var(--clr-bg);
+  color: var(--clr-primary);
+  border: 2px solid var(--clr-primary);
+}
+
+body.dark .question-box button:hover {
+  background: var(--clr-primary);
+  color: white;
+}
+
+body.dark #history-table thead {
+  background: var(--clr-primary);
+  color: white;
+}
+
+body.dark #history-table tbody tr:nth-child(even) {
+  background: #2d2d2d;
+}
+
+body.dark #history-table tbody tr:hover {
+  background: #3a3a3a;
+}
+
+body.dark .nav-item {
+  border-color: var(--clr-primary);
+  color: var(--clr-primary);
+}
+
+body.dark .nav-item:hover,
+body.dark .nav-item.active {
+  background: var(--clr-primary);
+  color: white;
+}
+
+body.dark .correct {
+  background: var(--clr-success) !important;
+  border-color: var(--clr-success) !important;
+  color: white !important;
+}
+
+body.dark .wrong {
+  background: var(--clr-error) !important;
+  border-color: var(--clr-error) !important;
+  color: white !important;
+}

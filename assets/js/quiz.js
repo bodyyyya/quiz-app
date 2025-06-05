@@ -19,19 +19,21 @@ restartBtn.addEventListener('click', () => {
   document.getElementById('topic-selection').classList.remove('hidden');
 });
 
-export function startQuiz(key, quiz) {
-  currentQuiz   = quiz;
-  currentIndex  = 0;
-  userAnswers   = new Array(quiz.questions.length).fill(null);
+export function startQuiz(key, quiz, index = 0, answers = []) {
+  currentQuiz = { ...quiz, key };
+  currentIndex = index;
+  userAnswers = answers.length ? answers : new Array(quiz.questions.length).fill(null);
 
   const timeMinutes = quiz.timeLimit || 5;
   const fullTime = timeMinutes * 60;
   const timerBar = document.getElementById('timer-bar');
   timerBar.style.width = '100%';
 
-  quizTitle.textContent     = quiz.title;
+  quizTitle.textContent = quiz.title;
   finishSection.classList.add('hidden');
   quizSection.classList.remove('hidden');
+  quizSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
 
   buildNav();
   renderQuestion();
@@ -51,6 +53,15 @@ export function startQuiz(key, quiz) {
     updateGlobalTimer(globalTimerEl);
     const percent = (totalTimeLeft / fullTime) * 100;
     timerBar.style.width = `${percent}%`;
+
+    localStorage.setItem('resume_quiz', JSON.stringify({
+      key,
+      quiz,
+      index: currentIndex,
+      answers: userAnswers,
+      title: quiz.title
+    }));
+
     if (totalTimeLeft <= 0) {
       clearInterval(quizTimerInterval);
       finishQuiz();
@@ -67,15 +78,30 @@ function updateGlobalTimer(el) {
 
 function buildNav() {
   questionNav.innerHTML = '';
-  currentQuiz.questions.forEach((_, idx) => {
+  currentQuiz.questions.forEach((q, idx) => {
     const item = document.createElement('div');
     item.className = 'nav-item';
     item.textContent = idx + 1;
+
+    const answer = userAnswers[idx];
+    if (answer !== null && answer !== undefined) {
+      if (answer === q.answer) {
+        item.classList.add('correct');
+      } else {
+        item.classList.add('wrong');
+      }
+    }
+
     item.addEventListener('click', () => {
       currentIndex = idx;
       renderQuestion();
     });
+
     questionNav.appendChild(item);
+  });
+
+  Array.from(questionNav.children).forEach((el, idx) => {
+    el.classList.toggle('active', idx === currentIndex);
   });
 }
 
@@ -93,10 +119,17 @@ function renderQuestion() {
   q.options.forEach(opt => {
     const btn = document.createElement('button');
     btn.textContent = opt;
-    btn.disabled = false;
 
-    if (userAnswers[currentIndex] === opt) {
-      btn.classList.add(opt === q.answer ? 'correct' : 'wrong');
+    if (userAnswers[currentIndex] !== null && userAnswers[currentIndex] !== undefined) {
+      btn.disabled = true;
+
+      if (opt === userAnswers[currentIndex]) {
+        btn.classList.add(opt === q.answer ? 'correct' : 'wrong');
+      }
+
+      if (opt === q.answer && userAnswers[currentIndex] !== q.answer) {
+        btn.classList.add('correct');
+      }
     }
 
     btn.addEventListener('click', () => selectAnswer(btn, opt));
@@ -139,16 +172,24 @@ function moveNext() {
 export function finishQuiz() {
   clearInterval(quizTimerInterval);
   quizSection.classList.add('hidden');
+
+  localStorage.removeItem('resume_quiz');
+
+  const resumeBtn = document.querySelector('#resume-btn');
+  if (resumeBtn) resumeBtn.remove();
+
+
   const correctCount = currentQuiz.questions
     .filter((q, i) => userAnswers[i] === q.answer)
     .length;
+
   scoreText.textContent = `Правильно ${correctCount} із ${currentQuiz.questions.length}.`;
   incorrectQuestions = currentQuiz.questions.filter((q, i) => userAnswers[i] !== q.answer);
 
+  const existingRepeat = document.querySelector('#repeat-btn');
+  if (existingRepeat) existingRepeat.remove();
+
   if (incorrectQuestions.length > 0) {
-    const existingRepeat = document.querySelector('#repeat-btn');
-    if (existingRepeat) existingRepeat.remove();
-  
     const repeatBtn = document.createElement('button');
     repeatBtn.textContent = `Повторити неправильні (${incorrectQuestions.length})`;
     repeatBtn.className = 'btn';
@@ -163,19 +204,14 @@ export function finishQuiz() {
       });
     });
     finishSection.appendChild(repeatBtn);
-  } else {
-    // Якщо була кнопка з попереднього проходження — прибираємо
-    const existingRepeat = document.querySelector('#repeat-btn');
-    if (existingRepeat) existingRepeat.remove();
   }
-  
-  
 
   finishSection.classList.remove('hidden');
 
   const history = JSON.parse(localStorage.getItem('quiz_history') || '[]');
   history.unshift({
     date: new Date().toLocaleString(),
+    key: currentQuiz.key,
     topic: currentQuiz.title,
     score: correctCount,
     total: currentQuiz.questions.length
