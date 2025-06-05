@@ -1,6 +1,7 @@
 import { quizzes } from './data.js';
 import { startQuiz } from './quiz.js';
 import { showHistory } from './history.js';
+import { showStats } from './stats.js';
 
 const topicsContainer = document.getElementById('topics-container');
 const topicSelection = document.getElementById('topic-selection');
@@ -92,7 +93,6 @@ const historyBtn = document.createElement('button');
 historyBtn.textContent = 'Історія результатів';
 historyBtn.className = 'btn';
 historyBtn.addEventListener('click', showHistory);
-document.getElementById('topic-selection').insertBefore(historyBtn, topicsContainer);
 
 const toggleThemeBtn = document.createElement('button');
 toggleThemeBtn.textContent = '🌓 Змінити тему';
@@ -109,18 +109,31 @@ if (localStorage.getItem('theme') === 'dark') {
   document.body.classList.add('dark');
 }
 
+const btnGroup = document.createElement('div');
+btnGroup.className = 'btn-group';
+btnGroup.style.marginBottom = '1rem';
+
 const resumeData = JSON.parse(localStorage.getItem('resume_quiz'));
 if (resumeData) {
   const resumeBtn = document.createElement('button');
   resumeBtn.textContent = `Продовжити: ${resumeData.title}`;
   resumeBtn.className = 'btn';
   resumeBtn.id = 'resume-btn';
-  resumeBtn.style.marginTop = '1rem';
 
   resumeBtn.addEventListener('click', () => {
     document.getElementById('topic-selection').classList.add('hidden');
     startQuiz(resumeData.key, resumeData.quiz, resumeData.index, resumeData.answers);
   });
 
-  document.getElementById('topic-selection').insertBefore(resumeBtn, topicsContainer);
+  btnGroup.appendChild(resumeBtn);
 }
+
+const statsBtn = document.createElement('button');
+statsBtn.textContent = '📊 Статистика';
+statsBtn.className = 'btn';
+statsBtn.addEventListener('click', showStats);
+
+btnGroup.appendChild(historyBtn);
+btnGroup.appendChild(statsBtn);
+
+document.getElementById('topic-selection').insertBefore(btnGroup, topicsContainer);
