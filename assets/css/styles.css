@@ -124,6 +124,10 @@ h1, h2 {
   margin-bottom: 0.5rem;
 }
 
+body.dark #progress {
+  color: #e0e0e0;
+}
+
 .correct {
   border-color: var(--clr-success) !important;
   background: var(--clr-success) !important;
@@ -180,6 +184,10 @@ h1, h2 {
   margin-bottom: 1rem;
 }
 
+body.dark #global-timer {
+  color: #e0e0e0;
+}
+
 .question-nav .timeout {
   background-color: #f39c12;
 }
@@ -232,6 +240,10 @@ h1, h2 {
   background-color: #ddd;
   border-radius: var(--radius);
   margin: 10px 0;
+}
+
+body.dark .timer-bar-container {
+  background-color: #3a3a3a;
 }
 
 .timer-bar {
