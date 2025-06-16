@@ -127,7 +127,8 @@ if (resumeData) {
       {
         ...resumeData.quiz,
         score: resumeData.score || 0,
-        streak: resumeData.streak || 0
+        streak: resumeData.streak || 0,
+        remainingTime: resumeData.remainingTime
       },
       resumeData.index,
       resumeData.answers

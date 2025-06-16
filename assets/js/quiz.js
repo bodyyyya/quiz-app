@@ -45,7 +45,7 @@ export function startQuiz(key, quiz, index = 0, answers = []) {
   renderQuestion();
 
   clearInterval(quizTimerInterval);
-  totalTimeLeft = fullTime;
+  totalTimeLeft = typeof quiz.remainingTime === 'number' ? quiz.remainingTime : fullTime;
 
   let globalTimerEl = document.getElementById('global-timer');
   if (!globalTimerEl) {
@@ -67,8 +67,9 @@ export function startQuiz(key, quiz, index = 0, answers = []) {
       answers: userAnswers,
       title: quiz.title,
       score,
-      streak
-    }));
+      streak,
+      remainingTime: totalTimeLeft
+    }));    
 
     if (totalTimeLeft <= 0) {
       clearInterval(quizTimerInterval);
@@ -199,7 +200,6 @@ function selectAnswer(button, opt) {
     navItem.classList.add('correct');
     button.classList.add('correct');
 
-    // Показати індикатор стріку
     if (streak >= 2) {
       streakEl.textContent = `🔥 Серія правильних відповідей: ${streak}`;
       streakEl.classList.remove('hidden');

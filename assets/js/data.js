@@ -20,7 +20,7 @@ export const quizzes = {
     },
     medium: {
       title: 'Мікс (Середній)',
-      timeLimit: 5,
+      timeLimit: 3,
       questions: [
         { text: '5 · 3 = ?', options: ['10', '15', '8', '12'], answer: '15' },
         { text: 'Кількість хромосом у людини?', options: ['46', '44', '48', '42'], answer: '46' },
@@ -36,7 +36,7 @@ export const quizzes = {
     },
     hard: {
       title: 'Мікс (Тяжкий)',
-      timeLimit: 7,
+      timeLimit: 3,
       questions: [
         { text: '√81?', options: ['9', '8', '7', '6'], answer: '9' },
         { text: 'Формула кінетичної енергії?', options: ['E=mc²', 'E=mv', 'E=½mv²', 'E=F×s'], answer: 'E=½mv²' },
@@ -71,7 +71,7 @@ export const quizzes = {
     },
     medium: {
       title: 'Мікс #2 (Середній)',
-      timeLimit: 5,
+      timeLimit: 3,
       questions: [
         { text: 'Що таке формула?', options: ['Математичний вираз', 'Таблиця', 'Графік', 'Файл'], answer: 'Математичний вираз' },
         { text: '12 ÷ 4 = ?', options: ['3', '2', '4', '5'], answer: '3' },
@@ -87,7 +87,7 @@ export const quizzes = {
     },
     hard: {
       title: 'Мікс #2 (Складний)',
-      timeLimit: 7,
+      timeLimit: 3,
       questions: [
         { text: 'Формула прискорення?', options: ['a = Δv / t', 'a = F / s', 'a = m / t', 'a = s / t'], answer: 'a = Δv / t' },
         { text: 'Формула площі круга?', options: ['πr²', '2πr', 'r·π', 'π²'], answer: 'πr²' },
@@ -122,7 +122,7 @@ export const quizzes = {
     },
     medium: {
       title: 'Мікс #3 (Середній)',
-      timeLimit: 5,
+      timeLimit: 3,
       questions: [
         { text: 'Який елемент має атомний номер 6?', options: ['C', 'N', 'O', 'H'], answer: 'C' },
         { text: 'Кількість хромосом у людини?', options: ['46', '44', '48', '42'], answer: '46' },
@@ -138,7 +138,7 @@ export const quizzes = {
     },
     hard: {
       title: 'Мікс #3 (Складний)',
-      timeLimit: 7,
+      timeLimit: 3,
       questions: [
         { text: 'Функція лімфатичної системи?', options: ['Захист і дренаж', 'Травлення', 'Рух', 'Дихання'], answer: 'Захист і дренаж' },
         { text: 'Скільки часових поясів у Росії?', options: ['11', '9', '7', '13'], answer: '11' },
@@ -182,7 +182,7 @@ export const quizzes = {
       },
       medium: {
         title: 'Логіка (Середній)',
-        timeLimit: 5,
+        timeLimit: 3,
         questions: [
           { text: 'У батька є пʼять синів: Чачо, Чечо, Чичо, Чочо. Як звати пʼятого?', options: ['Чучо', 'Я', 'Вася', 'Чачачо'], answer: 'Я' },
           { text: 'Яке число має три однакові цифри та ділиться на 3?', options: ['333', '111', '222', '999'], answer: '999' },
@@ -198,7 +198,7 @@ export const quizzes = {
       },
       hard: {
         title: 'Логіка (Складний)',
-        timeLimit: 7,
+        timeLimit: 3,
         questions: [
           { text: 'Яке число треба підставити: 6 _ 2 = 8, 8 _ 4 = 12, 10 _ 5 = ?', options: ['15', '10', '5', '20'], answer: '15' },
           { text: 'Скільки трикутників на зображенні? (у текстовій версії: у великому трикутнику 4 менші)', options: ['4', '6', '8', '7'], answer: '7' },
@@ -235,7 +235,7 @@ export const quizzes = {
       },
       medium: {
         title: 'True/False (Середній)',
-        timeLimit: 5,
+        timeLimit: 3,
         questions: [
           { type: 'boolean', text: 'Формула води — CO₂.', answer: false },
           { type: 'boolean', text: 'Піраміди розташовані в Єгипті.', answer: true },
@@ -251,7 +251,7 @@ export const quizzes = {
       },
       hard: {
         title: 'True/False (Складний)',
-        timeLimit: 7,
+        timeLimit: 3,
         questions: [
           { type: 'boolean', text: 'Планківська стала приблизно дорівнює 6.63×10⁻³⁴ Дж·с.', answer: true },
           { type: 'boolean', text: 'Гепард — найповільніша тварина.', answer: false },
