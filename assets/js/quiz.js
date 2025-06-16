@@ -2,6 +2,11 @@ let currentQuiz, currentIndex;
 let userAnswers;
 let quizTimerInterval, totalTimeLeft;
 let incorrectQuestions = [];
+let score = 0;
+let streak = 0;
+
+const correctSound = new Audio('assets/sounds/correct.mp3');
+const wrongSound = new Audio('assets/sounds/wrong.mp3');
 
 const quizSection       = document.getElementById('quiz-section');
 const quizTitle         = document.getElementById('quiz-title');
@@ -23,7 +28,8 @@ export function startQuiz(key, quiz, index = 0, answers = []) {
   currentQuiz = { ...quiz, key };
   currentIndex = index;
   userAnswers = answers.length ? answers : new Array(quiz.questions.length).fill(null);
-
+  score = 0;
+  streak = 0;
   const timeMinutes = quiz.timeLimit || 5;
   const fullTime = timeMinutes * 60;
   const timerBar = document.getElementById('timer-bar');
@@ -138,26 +144,79 @@ function renderQuestion() {
 }
 
 function selectAnswer(button, opt) {
-  const q       = currentQuiz.questions[currentIndex];
+  const q = currentQuiz.questions[currentIndex];
   const correct = q.answer;
   userAnswers[currentIndex] = opt;
 
   questionContainer.querySelectorAll('button').forEach(b => b.disabled = true);
 
   const navItem = questionNav.children[currentIndex];
+
+  const streakEl = document.getElementById('streak-indicator');
+  if (streakEl) {
+    streakEl.classList.add('hidden');
+    streakEl.textContent = '';
+  }
   if (opt === correct) {
+    correctSound.play();
+
+    streak++;
+    let gained = 10;
+
+    if (streak > 1) {
+      const bonus = 5 * (streak - 1);
+      gained += bonus;
+    }
+
+    score += gained;
+    showScorePopup(gained);
+
     navItem.classList.add('correct');
     button.classList.add('correct');
+
+    // Показати індикатор стріку
+    if (streak >= 2) {
+      streakEl.textContent = `🔥 Серія правильних відповідей: ${streak}`;
+      streakEl.classList.remove('hidden');
+      streakEl.style.animation = 'none';
+      streakEl.offsetHeight;
+      streakEl.style.animation = '';
+    } else {
+      streakEl.classList.add('hidden');
+    }
+
     setTimeout(moveNext, 500);
   } else {
+    wrongSound.play();
+
+    streak = 0;
+    streakEl.classList.add('hidden');
+
     navItem.classList.add('wrong');
     button.classList.add('wrong');
+
     Array.from(questionContainer.querySelectorAll('button'))
       .find(b => b.textContent === correct)
       .classList.add('correct');
+
     setTimeout(moveNext, 1500);
   }
 }
+
+
+function showScorePopup(points = 10) {
+  const popup = document.getElementById('score-popup');
+  popup.textContent = `+${points}`;
+  popup.classList.remove('hidden');
+
+  popup.style.animation = 'none';
+  popup.offsetHeight;
+  popup.style.animation = '';
+  popup.classList.add('score-popup');
+
+  setTimeout(() => popup.classList.add('hidden'), 1000);
+}
+
 
 function moveNext() {
   const last = currentQuiz.questions.length - 1;
@@ -168,6 +227,24 @@ function moveNext() {
     finishQuiz();
   }
 }
+
+function getStreaks(answers, questions) {
+  let streak = 0;
+  let streaks = [];
+
+  for (let i = 0; i < answers.length; i++) {
+    if (answers[i] === questions[i].answer) {
+      streak++;
+    } else {
+      if (streak > 0) streaks.push(streak);
+      streak = 0;
+    }
+  }
+
+  if (streak > 0) streaks.push(streak);
+  return streaks;
+}
+
 
 export function finishQuiz() {
   clearInterval(quizTimerInterval);
@@ -183,7 +260,7 @@ export function finishQuiz() {
     .filter((q, i) => userAnswers[i] === q.answer)
     .length;
 
-  scoreText.textContent = `Правильно ${correctCount} із ${currentQuiz.questions.length}.`;
+  scoreText.textContent = `Правильно ${correctCount} із ${currentQuiz.questions.length}. Загальний рахунок: ${score} балів.`;
   incorrectQuestions = currentQuiz.questions.filter((q, i) => userAnswers[i] !== q.answer);
 
   const existingRepeat = document.querySelector('#repeat-btn');
@@ -214,7 +291,9 @@ export function finishQuiz() {
     key: currentQuiz.key,
     topic: currentQuiz.title,
     score: correctCount,
-    total: currentQuiz.questions.length
-  });
+    total: currentQuiz.questions.length,
+    points: score,
+    streakMax: Math.max(...getStreaks(userAnswers, currentQuiz.questions))
+  });  
   localStorage.setItem('quiz_history', JSON.stringify(history));
 }

@@ -10,12 +10,23 @@ export function showHistory() {
 
   const history = JSON.parse(localStorage.getItem('quiz_history') || '[]');
   tableBody.innerHTML = '';
-  history.forEach(({ date, topic, score, total }) => {
+
+  history.forEach(({ date, topic, points, streakMax }) => {
+    let medal = '';
+    if (streakMax >= 10) medal = '🥇';
+    else if (streakMax >= 5) medal = '🥈';
+    else if (streakMax >= 2) medal = '🥉';
+
     const row = document.createElement('tr');
-    row.innerHTML = `<td>${date}</td><td>${topic}</td><td>${score} / ${total}</td>`;
+    row.innerHTML = `
+      <td>${date}</td>
+      <td>${topic}</td>
+      <td>${points} балів <br/> 🔥 Стрік: ${streakMax || 0} ${medal}</td>
+    `;
     tableBody.appendChild(row);
   });
 }
+
 
 backBtn.addEventListener('click', () => {
   historySection.classList.add('hidden');
