@@ -124,25 +124,48 @@ function renderQuestion() {
   const q = currentQuiz.questions[currentIndex];
   questionContainer.innerHTML = `<p class="question-text">${q.text}</p>`;
 
-  q.options.forEach(opt => {
-    const btn = document.createElement('button');
-    btn.textContent = opt;
+  if (q.type === 'boolean') {
+    ['Правда', 'Неправда'].forEach(label => {
+      const val = label === 'Правда';
+      const btn = document.createElement('button');
+      btn.textContent = label;
 
-    if (userAnswers[currentIndex] !== null && userAnswers[currentIndex] !== undefined) {
-      btn.disabled = true;
+      if (userAnswers[currentIndex] !== null && userAnswers[currentIndex] !== undefined) {
+        btn.disabled = true;
 
-      if (opt === userAnswers[currentIndex]) {
-        btn.classList.add(opt === q.answer ? 'correct' : 'wrong');
+        if (val === userAnswers[currentIndex]) {
+          btn.classList.add(val === q.answer ? 'correct' : 'wrong');
+        }
+
+        if (val === q.answer && userAnswers[currentIndex] !== q.answer) {
+          btn.classList.add('correct');
+        }
       }
 
-      if (opt === q.answer && userAnswers[currentIndex] !== q.answer) {
-        btn.classList.add('correct');
-      }
-    }
+      btn.addEventListener('click', () => selectAnswer(btn, val));
+      questionContainer.appendChild(btn);
+    });
+  } else {
+    q.options.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.textContent = opt;
 
-    btn.addEventListener('click', () => selectAnswer(btn, opt));
-    questionContainer.appendChild(btn);
-  });
+      if (userAnswers[currentIndex] !== null && userAnswers[currentIndex] !== undefined) {
+        btn.disabled = true;
+
+        if (opt === userAnswers[currentIndex]) {
+          btn.classList.add(opt === q.answer ? 'correct' : 'wrong');
+        }
+
+        if (opt === q.answer && userAnswers[currentIndex] !== q.answer) {
+          btn.classList.add('correct');
+        }
+      }
+
+      btn.addEventListener('click', () => selectAnswer(btn, opt));
+      questionContainer.appendChild(btn);
+    });
+  }
 }
 
 function selectAnswer(button, opt) {
@@ -197,9 +220,15 @@ function selectAnswer(button, opt) {
     navItem.classList.add('wrong');
     button.classList.add('wrong');
 
-    Array.from(questionContainer.querySelectorAll('button'))
-      .find(b => b.textContent === correct)
-      .classList.add('correct');
+    const correctBtn = Array.from(questionContainer.querySelectorAll('button')).find(b => {
+      if (q.type === 'boolean') {
+        return (b.textContent === 'Правда' && q.answer === true) ||
+               (b.textContent === 'Неправда' && q.answer === false);
+      } else {
+        return b.textContent === q.answer;
+      }
+    });
+    if (correctBtn) correctBtn.classList.add('correct');    
 
     setTimeout(moveNext, 1500);
   }
