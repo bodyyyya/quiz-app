@@ -28,13 +28,13 @@ export function startQuiz(key, quiz, index = 0, answers = []) {
   currentQuiz = { ...quiz, key };
   currentIndex = index;
   userAnswers = answers.length ? answers : new Array(quiz.questions.length).fill(null);
-  score = 0;
-  streak = 0;
+  score = typeof quiz.score === 'number' ? quiz.score : 0;
+  streak = typeof quiz.streak === 'number' ? quiz.streak : 0;
   const timeMinutes = quiz.timeLimit || 5;
   const fullTime = timeMinutes * 60;
   const timerBar = document.getElementById('timer-bar');
   timerBar.style.width = '100%';
-
+  document.getElementById('score-counter').textContent = `Бали: ${score}`;
   quizTitle.textContent = quiz.title;
   finishSection.classList.add('hidden');
   quizSection.classList.remove('hidden');
@@ -65,7 +65,9 @@ export function startQuiz(key, quiz, index = 0, answers = []) {
       quiz,
       index: currentIndex,
       answers: userAnswers,
-      title: quiz.title
+      title: quiz.title,
+      score,
+      streak
     }));
 
     if (totalTimeLeft <= 0) {
@@ -170,7 +172,7 @@ function selectAnswer(button, opt) {
 
     score += gained;
     showScorePopup(gained);
-
+    document.getElementById('score-counter').textContent = `Очки: ${score}`;
     navItem.classList.add('correct');
     button.classList.add('correct');
 
@@ -284,7 +286,7 @@ export function finishQuiz() {
   }
 
   finishSection.classList.remove('hidden');
-
+  document.getElementById('score-counter').textContent = '';
   const history = JSON.parse(localStorage.getItem('quiz_history') || '[]');
   history.unshift({
     date: new Date().toLocaleString(),

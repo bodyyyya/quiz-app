@@ -122,7 +122,16 @@ if (resumeData) {
 
   resumeBtn.addEventListener('click', () => {
     document.getElementById('topic-selection').classList.add('hidden');
-    startQuiz(resumeData.key, resumeData.quiz, resumeData.index, resumeData.answers);
+    startQuiz(
+      resumeData.key,
+      {
+        ...resumeData.quiz,
+        score: resumeData.score || 0,
+        streak: resumeData.streak || 0
+      },
+      resumeData.index,
+      resumeData.answers
+    );
   });
 
   btnGroup.appendChild(resumeBtn);
