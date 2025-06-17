@@ -173,6 +173,8 @@ function selectAnswer(button, opt) {
   const q = currentQuiz.questions[currentIndex];
   const correct = q.answer;
   userAnswers[currentIndex] = opt;
+  const feedback = document.getElementById('feedback-message');
+  feedback.classList.remove('correct', 'wrong', 'hidden');
 
   questionContainer.querySelectorAll('button').forEach(b => b.disabled = true);
 
@@ -209,8 +211,9 @@ function selectAnswer(button, opt) {
     } else {
       streakEl.classList.add('hidden');
     }
-
-    setTimeout(moveNext, 500);
+    feedback.textContent = 'Молодець!';
+    feedback.classList.add('correct');
+    setTimeout(moveNext, 1000);
   } else {
     wrongSound.play();
 
@@ -229,7 +232,8 @@ function selectAnswer(button, opt) {
       }
     });
     if (correctBtn) correctBtn.classList.add('correct');    
-
+    feedback.textContent = 'Спробуй ще раз!';
+    feedback.classList.add('wrong');
     setTimeout(moveNext, 1500);
   }
 }
@@ -257,6 +261,10 @@ function moveNext() {
   } else {
     finishQuiz();
   }
+  const feedback = document.getElementById('feedback-message');
+  feedback.classList.add('hidden');
+  feedback.textContent = '';
+  feedback.classList.remove('correct', 'wrong');
 }
 
 function getStreaks(answers, questions) {
