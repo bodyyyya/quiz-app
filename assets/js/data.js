@@ -215,7 +215,7 @@ export const quizzes = {
     }
   },
   'Правда / Неправда': {
-    logic_bools: {
+    logicbools: {
       name: 'Факти: Правда чи Неправда',
       easy: {
         title: 'True/False (Легкий)',
