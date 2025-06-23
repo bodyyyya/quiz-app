@@ -6,7 +6,9 @@ let score = 0;
 let streak = 0;
 
 const correctSound = new Audio('assets/sounds/correct.mp3');
+correctSound.volume = 0.3;
 const wrongSound = new Audio('assets/sounds/wrong.mp3');
+wrongSound.volume = 0.3;
 
 const quizSection       = document.getElementById('quiz-section');
 const quizTitle         = document.getElementById('quiz-title');
